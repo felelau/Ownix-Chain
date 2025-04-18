@@ -1,25 +1,31 @@
+// File: ownix_proof_storage.tact
 
-import OwniXJettonMinter from "./ownix_jetton_minter.tact";
+contract OwnixProofStorage {
+    // Address pemilik (admin contract)
+    address owner;
 
-contract OwniXProofStorage {
-    mapping(address => bytes32) public usageProofs;
-    OwniXJettonMinter public minterContract;
-    uint256 rewardPerProof;
+    // Mapping penyimpanan proof per user
+    map<address, cell> user_proofs;
 
-    event ProofSubmitted(address indexed user, bytes32 proofHash);
-
-    constructor(address minterAddress, uint256 _rewardPerProof) public {
-        minterContract = OwniXJettonMinter(minterAddress);
-        rewardPerProof = _rewardPerProof;
+    // Constructor
+    constructor(address _owner) {
+        owner = _owner;
     }
 
-    function submitProof(bytes32 proofHash) external {
-        usageProofs[msg.sender] = proofHash;
-        emit ProofSubmitted(msg.sender, proofHash);
-        minterContract.mint(msg.sender, rewardPerProof);
+    // Fungsi untuk menyimpan proof hash
+    external fun submit_proof(address user, cell proof_hash) {
+        require(sender() == user || sender() == owner, "Unauthorized sender");
+        user_proofs.set(user, proof_hash);
     }
 
-    function getProof(address user) public view returns (bytes32) {
-        return usageProofs[user];
+    // Fungsi untuk memverifikasi proof hash sudah ada
+    external fun has_proof(address user) returns (bool) {
+        return user_proofs.has(user);
+    }
+
+    // Fungsi untuk ambil proof hash
+    external fun get_proof(address user) returns (cell) {
+        require(user_proofs.has(user), "Proof not found");
+        return user_proofs.get(user);
     }
 }
