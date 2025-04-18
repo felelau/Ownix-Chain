@@ -98,7 +98,7 @@ Ownix Chain merevolusi cara kita melihat blockchain dengan membayar pengguna ata
 
 ---
 
-**Repositori Resmi:** [https://github.com/felelau/Ownix_WalletWeb3](https://github.com/felelau/Ownix_WalletWeb3)
+**Repositori Resmi:** https://github.com/felelau/Ownix-Chain.git
 
 **Website:** [https://ton.org](https://ton.org)
 
