@@ -67,4 +67,4 @@ Semuanya dibangun di atas TON dengan pendekatan **cepat, ringan, dan mobile-firs
 ---
 
 **Website:** [https://ton.org](https://ton.org)  
-**Repositori:** [https://github.com/felelau/Ownix_WalletWeb3](https://github.com/felelau/Ownix_WalletWeb3)
+
