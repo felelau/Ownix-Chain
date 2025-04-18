@@ -1,0 +1,2 @@
+# Ownix-Chain
+OWNX
