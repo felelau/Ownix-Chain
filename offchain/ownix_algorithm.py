@@ -1,19 +1,54 @@
-
 import hashlib
+import time
 import json
 
-def generate_ownix_proof(data):
+# Fungsi untuk meng-hash data sensitif
+def hash_sensitive_data(data):
     json_data = json.dumps(data, sort_keys=True).encode('utf-8')
     hash_object = hashlib.sha256(json_data)
-    encrypted_hash = hash_object.hexdigest()
-    return encrypted_hash
+    return hash_object.hexdigest()
+
+# Fungsi untuk menghitung reward dari data usage
+def calculate_reward(data_used_bytes, reward_per_gb):
+    bytes_in_1GB = 1073741824  # 1 GB = 2^30 bytes
+    data_used_gb = data_used_bytes / bytes_in_1GB
+    reward = data_used_gb * reward_per_gb
+    return reward
+
+# Fungsi utama sistem reward
+def reward_system(user_data, reward_per_gb=10):
+    current_time = time.time()
+    
+    for user in user_data:
+        user_id = user["user_id"]
+        data_used = user["data_used"]
+        timestamp = user.get("timestamp", current_time)
+
+        # Data sensitif yang perlu di-hash
+        sensitive_info = {
+            "user_id": user_id,
+            "timestamp": timestamp
+        }
+        encrypted_proof = hash_sensitive_data(sensitive_info)
+
+        # Hitung reward
+        reward = calculate_reward(data_used, reward_per_gb)
+        
+        print(f"Encrypted Proof: {encrypted_proof}")
+        print(f"User ID (original): {user_id}")
+        print(f"Data Used: {data_used / (1024 ** 2):.2f} MB")
+        print(f"Reward Given: {reward:.2f} tokens")
+        print(f"Timestamp: {time.ctime(timestamp)}")
+        print("-" * 50)
 
 if __name__ == "__main__":
-    data_usage = {
-        "user_id": "0:abcd1234...",
-        "bytes_used": 2000,
-        "timestamp": 1713456789
-    }
+    # Contoh data penggunaan
+    user_data_usage = [
+        {"user_id": "0:abcd1234...", "data_used": 2147483648, "timestamp": 1713456789},  # 2 GB
+        {"user_id": "0:efgh5678...", "data_used": 5368709120, "timestamp": 1713459889},  # 5 GB
+        {"user_id": "0:ijkl9012...", "data_used": 1073741824, "timestamp": 1713460989},  # 1 GB
+    ]
 
-    proof = generate_ownix_proof(data_usage)
-    print("Encrypted Hash Proof:", proof)
+    reward_per_gb = 10  # misal 10 OWNIX token per GB
+
+    reward_system(user_data_usage, reward_per_gb)
